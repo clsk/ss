@@ -1,18 +1,17 @@
-local Scene = require "Scene"
+Game = require "Game"
 local Player = require "Player"
 
-mainScene = Scene.new(love.graphics.newImage('images/background.png'))
 
 function love.load()
-    love.window.setMode(640,480)
-    mainScene:addPlayer(Player.new(love.graphics.newImage('images/ship_32.png')))
+    love.window.setMode(Game.dimensions.x, Game.dimensions.y)
+    Game.scene:addPlayer(Player.new(love.graphics.newImage('images/ship_32.png')))
 end
 
 function love.draw()
-    mainScene:draw()
+    Game.scene:draw()
 end
 
 function love.update(dt)
-    mainScene:update(dt)
+    Game.scene:update(dt)
 end
 

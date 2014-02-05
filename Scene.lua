@@ -17,7 +17,7 @@ end
 
 function Scene:update(dt)
     for key,player in pairs(self.players) do
-        self.players[key]:update(dt)
+        player:update(dt)
     end
 end
 
