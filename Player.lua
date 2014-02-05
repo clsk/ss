@@ -76,7 +76,9 @@ function Player:update(dt)
     end
 
     for key,bullet in pairs(self.bullets) do
-        bullet:update(dt)
+        if not bullet:update(dt) then
+            table.remove(self.bullets, key)
+        end
     end
 end
 

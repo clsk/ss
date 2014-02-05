@@ -20,9 +20,13 @@ function Bullet.new(pos, radianOffset)
 end
 
 function Bullet:update(dt)
-    --self.pos.y = self.pos.y-1
     self.pos.x = self.pos.x + self.velocity.x
     self.pos.y = self.pos.y - self.velocity.y
+    if self.pos.x > Game.dimensions.x or self.pos.x < 0 or self.pos.y > Game.dimensions.y or self.pos.y < 0 then
+        return false
+    else
+        return true
+    end
 end
 
 function Bullet:draw()
