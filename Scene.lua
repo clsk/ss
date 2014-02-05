@@ -8,11 +8,9 @@ function Scene.new(background_image)
 end
 
 function Scene:addPlayer(player)
-    print(player)
     if (player ~= nil) then
         table.insert(self.players, player)
     end
-    print(table.getn(self.players))
 end
 
 function Scene:update(dt)
