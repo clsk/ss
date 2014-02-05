@@ -6,24 +6,19 @@ local Player = {}
 Player.__index = Player
 function Player.new(sprite, pos)
     local self = setmetatable({}, Player)
-    
-    
     -- Members
     self.sprite = sprite
     self.width, self.height = self.sprite:getDimensions()
     self.quadWidth = self.width / 6
     self.quadHeight = self.height / 12
     self.quads = {}
-    self.currentQuad = 0
-    self.RADIAN_OFFSET = 0.0827
-    self.ANGLE_OFFSET = 4.74
-    self.currentRadianOffset = 3.14/2
-    self.currentAngleOffset = 90
     self.pos = pos or Point.new(100,100)
     self.bullets = {}
     -- Initialization
     self.createQuads(self)
-    
+    self.currentQuad = 0
+    self.RADIAN_OFFSET = (2*math.pi) / (table.getn(self.quads)+1)
+
     return self
 end
 
@@ -35,29 +30,30 @@ function Player:createQuads()
     end
 end
 
+-- at quad 18, player is at 0 degrees
+function Player:calcOffsetAngle(currentQuad)
+    if currentQuad < 0 then
+        return (math.pi/2) - (self.RADIAN_OFFSET*currentQuad)
+    elseif currentQuad == 18 then
+        return 0
+    else
+        return self.RADIAN_OFFSET*72 - (self.RADIAN_OFFSET*(currentQuad - 18))
+    end
+end
+
 function Player:update(dt)
     if love.keyboard.isDown("lshift") then
         if love.keyboard.isDown("right") then
             if (self.currentQuad == 71) then
                 self.currentQuad = 0
-                self.radianOffset = 0
-                self.currentAngleOffset = 0
             else
                 self.currentQuad = self.currentQuad+1
-                self.currentRadianOffset = self.currentRadianOffset + self.RADIAN_OFFSET
-                self.currentAngleOffset = self.currentAngleOffset + self.ANGLE_OFFSET
-
             end
         elseif love.keyboard.isDown("left") then
             if (self.currentQuad == 0) then
                 self.currentQuad = 71
-                self.currentRadianOffset = self.RADIAN_OFFSET * (table.getn(self.quads)+1)
-                self.currentAngleOffset = self.ANGLE_OFFSET * (table.getn(self.quads)+1)
             else
                 self.currentQuad = self.currentQuad-1
-                self.currentRadianOffset = self.currentRadianOffset - self.RADIAN_OFFSET
-                self.currentAngleOffset = self.currentAngleOffset - self.ANGLE_OFFSET
-
             end
         end
     else
@@ -74,7 +70,7 @@ function Player:update(dt)
         end
 
         if love.keyboard.isDown(" ") then
-            local bullet = Bullet.new(self.pos, self.currentRadianOffset)
+            local bullet = Bullet.new(self.pos, self:calcOffsetAngle(self.currentQuad))
             table.insert(self.bullets, bullet)
         end
     end
@@ -82,9 +78,6 @@ function Player:update(dt)
     for key,bullet in pairs(self.bullets) do
         bullet:update(dt)
     end
-
-    print(self.currentRadianOffset)
-    print(self.currentAngleOffset)
 end
 
 function Player:draw()
