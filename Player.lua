@@ -12,15 +12,19 @@ function Player.new(sprite, pos)
     self.quadWidth = self.width / 6
     self.quadHeight = self.height / 12
     self.quads = {}
-    self.pos = pos or Point.new(100,100)
+    self.pos = pos or Point.new(Game.dimensions.x/2, Game.dimensions.y*0.75)
     self.bullets = {}
+    self.lastShot = os.time() - 1
     -- Initialization
     self.createQuads(self)
+    self.quadCount = table.getn(self.quads)+1
     self.currentQuad = 0
-    self.RADIAN_OFFSET = (2*math.pi) / (table.getn(self.quads)+1)
+    self.RADIAN_OFFSET = (2*math.pi) / (self.quadCount)
 
     return self
 end
+
+Player.singleShotSound = love.audio.newSource("sounds/single_shot.mp3", "static")
 
 function Player:createQuads()
     for y = 0, self.height-self.quadHeight, self.quadHeight do
@@ -30,28 +34,22 @@ function Player:createQuads()
     end
 end
 
--- at quad 18, player is at 0 degrees
+-- at self.quadCount/4 player is facing right, thus at 0 degrees
 function Player:calcOffsetAngle(currentQuad)
-    if currentQuad < 0 then
-        return (math.pi/2) - (self.RADIAN_OFFSET*currentQuad)
-    elseif currentQuad == 18 then
-        return 0
-    else
-        return self.RADIAN_OFFSET*72 - (self.RADIAN_OFFSET*(currentQuad - 18))
-    end
+    return self.RADIAN_OFFSET*(self.quadCount) - (self.RADIAN_OFFSET*(currentQuad - (self.quadCount/4)))
 end
 
 function Player:update(dt)
     if love.keyboard.isDown("lshift") then
         if love.keyboard.isDown("right") then
-            if (self.currentQuad == 71) then
+            if (self.currentQuad == (self.quadCount-1)) then
                 self.currentQuad = 0
             else
                 self.currentQuad = self.currentQuad+1
             end
         elseif love.keyboard.isDown("left") then
             if (self.currentQuad == 0) then
-                self.currentQuad = 71
+                self.currentQuad = (self.quadCount-1)
             else
                 self.currentQuad = self.currentQuad-1
             end
@@ -69,9 +67,11 @@ function Player:update(dt)
             self.pos.y = self.pos.y+1
         end
 
-        if love.keyboard.isDown(" ") then
+        if love.keyboard.isDown(" ") and (os.time() - self.lastShot) > 0 then
             local bullet = Bullet.new(self.pos, self:calcOffsetAngle(self.currentQuad))
             table.insert(self.bullets, bullet)
+            love.audio.play(Player.singleShotSound)
+            self.lastShot = os.time()
         end
     end
 

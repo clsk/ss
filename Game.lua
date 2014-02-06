@@ -1,8 +1,7 @@
 local Point = require "Point"
-local Scene = require "Scene"
 
 Game = {
-    ["scene"] = Scene.new(love.graphics.newImage('images/background.png')),
+    ["scene"] = {},
     ["dimensions"] = Point.new(640, 480)
 }
 
