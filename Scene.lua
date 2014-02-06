@@ -32,7 +32,7 @@ function Scene:update(dt)
     self.player:update(dt)
 
     if os.time() - self.lastEnemy > self.enemyInterval then
-        table.insert(self.enemies, Enemy.new(Point.new(math.random(0, Game.dimensions.x), math.random(0, Game.dimensions.y/3))))
+        table.insert(self.enemies, Enemy.new(Point.new(math.random(0, Game.dimensions.x-self.player.quadWidth), math.random(0, Game.dimensions.y/3))))
         self.lastEnemy = os.time()
     end
 end
