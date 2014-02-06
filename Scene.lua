@@ -1,14 +1,24 @@
 local Enemy = require "Enemy"
+local Point = require "Point"
+Game = require "Game"
 
 local Scene = {}
 Scene.__index = Scene
-function Scene.new(background_image, player, lives)
+Scene.takeoffSound = love.audio.newSource("sounds/takeoff.mp3", "static")
+-- background_image:love.graphics.image Scene Background Image
+-- player:Player Scene player
+-- lives:Integer Player initial lives
+-- enemyInterval:Integer Interval between enemy creation
+function Scene.new(background_image, player, lives, enemyInterval)
     local self = setmetatable({}, Scene)
     self.background_image = background_image
     self.player = player
     self.enemies = {}
     self.lastEnemy = os.time() - 3
     self.lives = lives or 5
+    self.enemyInterval = enemyInterval or 3
+
+    love.audio.play(Scene.takeoffSound)
     return self
 end
 
@@ -21,9 +31,8 @@ function Scene:update(dt)
 
     self.player:update(dt)
 
-    if os.time() - self.lastEnemy > 5 then
-        table.insert(self.enemies, Enemy.new(self.player.pos))
-        print("creating enemy")
+    if os.time() - self.lastEnemy > self.enemyInterval then
+        table.insert(self.enemies, Enemy.new(Point.new(math.random(0, Game.dimensions.x), math.random(0, Game.dimensions.y/3))))
         self.lastEnemy = os.time()
     end
 end
@@ -42,7 +51,6 @@ function Scene:removeEnemy(key)
 end
 
 function Scene:takeLife()
-    print("took 1 life")
     self.lives = self.lives - 1
     if self.lives < 1 then
         --Game over

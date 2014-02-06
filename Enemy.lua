@@ -7,17 +7,18 @@ Enemy.__index = Enemy
 Enemy.sprite = love.graphics.newImage('images/enemy.png')
 Enemy.quads = {}
 Enemy.quadCount = 72
+Enemy.width, Enemy.height = Enemy.sprite:getDimensions()
+Enemy.quadWidth = 60
+Enemy.quadHeight = 60
+
 function Enemy.new(pos)
     local self = setmetatable({}, Enemy)
     -- Lazyload quads
-    self.width, self.height = self.sprite:getDimensions()
-    self.quadWidth = 60
-    self.quadHeight = 60
     if table.getn(self.quads) == 0 then
         self.createQuads(self)
     end
 
-    self.pos = Point.new(pos.x, 1) or Point.new(Game.dimensions.x/2, 1)
+    self.pos = Point.new(pos.x, pos.y) or Point.new(Game.dimensions.x/2, 1)
     self.bullets = {}
     -- Initialization
     self.currentQuad = 0
@@ -47,7 +48,6 @@ function Enemy:update(dt)
     self.pos.y = self.pos.y + 1
 
     local player = Game.scene.player
-    print(player.pos.x, player.pos.y, player.quadWidth, player.quadHeight, self.pos.x, self.pos.y, self.quadWidth, self.quadHeight)
     if Utils.checkCollision(player.pos.x, player.pos.y, player.quadWidth, player.quadHeight, self.pos.x, self.pos.y, self.quadWidth*0.65, self.quadHeight*0.75) then
         Game.scene:takeLife()
         return false;

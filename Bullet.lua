@@ -21,8 +21,6 @@ function Bullet.new(pos, radianOffset)
 
     self.radianOffset = radianOffset
     self.velocity = Point.new(math.cos(self.radianOffset), math.sin(self.radianOffset))
-    print(self.pos.y)
-    print(radianOffset)
 
     return self
 end
