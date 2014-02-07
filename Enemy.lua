@@ -54,6 +54,7 @@ function Enemy:update(dt)
     end
 
     if self.pos.x > Game.dimensions.x or self.pos.x < 0 or self.pos.y > Game.dimensions.y or self.pos.y < 0 then
+        Game.scene.scoreBoard:takeLife()
         return false
     else
         return true

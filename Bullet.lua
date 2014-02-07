@@ -20,13 +20,9 @@ function Bullet.new(pos, radianOffset)
     self.pos.y = pos.y+1
 
     self.radianOffset = radianOffset
-    self.velocity = Point.new(math.cos(self.radianOffset), math.sin(self.radianOffset))
+    self.velocity = Point.new(math.cos(self.radianOffset) * 4, math.sin(self.radianOffset) * 4)
 
     return self
-end
-
-function Bullet.calc()
-
 end
 
 function Bullet:update(dt)
@@ -35,7 +31,7 @@ function Bullet:update(dt)
 
     for key, enemy in pairs(Game.scene.enemies) do
         if Utils.checkCollision(self.pos.x, self.pos.y, 8, 4, enemy.pos.x, enemy.pos.y, enemy.quadWidth*.75, enemy.quadHeight) then
-            Game.scene:removeEnemy(key)
+            Game.scene:enemyKilled(key)
             return false
         end
     end

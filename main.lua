@@ -6,6 +6,7 @@ function love.load()
     love.window.setMode(Game.dimensions.x, Game.dimensions.y)
     Game.scene = Scene.new(love.graphics.newImage('images/background.png'), Player.new(love.graphics.newImage('images/ship_32.png')))
     math.randomseed( os.time() )
+    love.graphics.setFont(love.graphics.newFont(18))
 end
 
 function love.draw()

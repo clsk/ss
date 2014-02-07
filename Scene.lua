@@ -1,5 +1,6 @@
 local Enemy = require "Enemy"
 local Point = require "Point"
+local ScoreBoard = require "ScoreBoard"
 Game = require "Game"
 
 local Scene = {}
@@ -15,8 +16,8 @@ function Scene.new(background_image, player, lives, enemyInterval)
     self.player = player
     self.enemies = {}
     self.lastEnemy = os.time() - 3
-    self.lives = lives or 5
-    self.enemyInterval = enemyInterval or 3
+    self.enemyInterval = enemyInterval or 1
+    self.scoreBoard = ScoreBoard.new(player, lives or 5)
 
     love.audio.play(Scene.takeoffSound)
     return self
@@ -32,7 +33,7 @@ function Scene:update(dt)
     self.player:update(dt)
 
     if os.time() - self.lastEnemy > self.enemyInterval then
-        table.insert(self.enemies, Enemy.new(Point.new(math.random(0, Game.dimensions.x-self.player.quadWidth), math.random(0, Game.dimensions.y/3))))
+        table.insert(self.enemies, Enemy.new(Point.new(math.random(0, Game.dimensions.x-(self.player.quadWidth*2)), math.random(0, Game.dimensions.y/3))))
         self.lastEnemy = os.time()
     end
 end
@@ -44,17 +45,21 @@ function Scene:draw()
     for key, enemy in pairs(self.enemies) do
         enemy:draw()
     end
+
+    self.scoreBoard:draw()
 end
 
 function Scene:removeEnemy(key)
     table.remove(self.enemies, key)
 end
 
+function Scene:enemyKilled(key)
+    self.scoreBoard:givePoint()
+    self:removeEnemy(key)
+end
+
 function Scene:takeLife()
-    self.lives = self.lives - 1
-    if self.lives < 1 then
-        --Game over
-    end
+    self.scoreBoard:takeLife()
 end
 
 return Scene
