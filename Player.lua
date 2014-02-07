@@ -53,6 +53,14 @@ function Player:update(dt)
             else
                 self.currentQuad = self.currentQuad-1
             end
+        elseif love.keyboard.isDown("g") then
+            if Game.scene.scoreBoard.hellFires > 0 and (os.time() - self.lastShot) > 0 then
+                for i = 0, 72, 1 do
+                    table.insert(self.bullets, Bullet.new(self.pos, self:calcOffsetAngle(i)))
+                end
+                Game.scene.scoreBoard:takeHellFire()
+                self.lastShot = os.time()
+            end
         end
     else
         if love.keyboard.isDown("left") and self.pos.x > 0 then

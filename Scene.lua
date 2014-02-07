@@ -25,6 +25,12 @@ function Scene.new(background_image, player, lives, enemyInterval)
 end
 
 function Scene:update(dt)
+    if self.scoreBoard.lives < 1 then
+        love.graphics.print("Game Over!", (Game.dimensions.x/2) - 10, Game.dimensions.y/2)
+        love.timer.sleep(5)
+        Game.scene = Scene.new(love.graphics.newImage('images/background.png'), Player.new(love.graphics.newImage('images/ship_32.png')))
+    end
+
     for key, enemy in pairs(self.enemies) do
         if not enemy:update(dt) then
             self:removeEnemy(key)
@@ -61,11 +67,6 @@ end
 
 function Scene:takeLife()
     self.scoreBoard:takeLife()
-    if self.scoreBoard.lives < 1 then
-        love.graphics.print("Game Over!", (Game.dimensions.x/2) - 10, Game.dimensions.y/2)
-        love.timer.sleep(5)
-        Game.scene = Scene.new(love.graphics.newImage('images/background.png'), Player.new(love.graphics.newImage('images/ship_32.png')))
-    end
 end
 
 return Scene
