@@ -1,6 +1,7 @@
 local Enemy = require "Enemy"
 local Point = require "Point"
 local ScoreBoard = require "ScoreBoard"
+local Player = require "Player"
 Game = require "Game"
 
 local Scene = {}
@@ -60,6 +61,11 @@ end
 
 function Scene:takeLife()
     self.scoreBoard:takeLife()
+    if self.scoreBoard.lives < 1 then
+        love.graphics.print("Game Over!", (Game.dimensions.x/2) - 10, Game.dimensions.y/2)
+        love.timer.sleep(5)
+        Game.scene = Scene.new(love.graphics.newImage('images/background.png'), Player.new(love.graphics.newImage('images/ship_32.png')))
+    end
 end
 
 return Scene

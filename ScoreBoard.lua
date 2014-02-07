@@ -12,7 +12,7 @@ end
 
 function ScoreBoard:draw()
     love.graphics.draw(self.player.sprite, self.player.quads[0], Game.dimensions.x-32, 1, 0, .75, .75)
-    love.graphics.print(self.lives, Game.dimensions.x-32-14, 1)
+    love.graphics.print(self.lives, Game.dimensions.x-46, 1)
 
     love.graphics.print("Points: "..self.points, (Game.dimensions.x/2)-32, 1)
 end
