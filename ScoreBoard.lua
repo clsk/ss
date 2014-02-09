@@ -38,8 +38,11 @@ end
 function ScoreBoard:givePoint()
     self.points = self.points+1
     love.audio.play(self.deadEnemySound)
-    if self.points == 50 then
+    if self.points == 30 then
         Game.scene.enemyInterval = 0
+    end
+    if math.fmod(self.points, 10) == 0 then
+        self.hellFires = self.hellFires + 1
     end
 end
 
